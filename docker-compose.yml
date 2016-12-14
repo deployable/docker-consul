@@ -9,7 +9,7 @@ services:
     command: consul agent -server -bind=172.16.231.10 -data-dir /consul/data
     volumes:
     - 'consul-data:/consul/data'
-    - ./basic-config.json:/consol/config/basic-config.json
+    - './basic-config.json:/consol/config/basic-config.json'
     
 
   consul-client-1:
@@ -21,7 +21,7 @@ services:
     depends_on:
     - consul-server
     volumes:
-    - ./basic-config.json:/consol/config/basic-config.json
+    - './basic-config.json:/consol/config/basic-config.json'
 
   consul-client-2:
     image: consul
@@ -32,7 +32,7 @@ services:
     depends_on:
     - consul-server
     volumes:
-    - ./basic-config.json:/consol/config/basic-config.json
+    - './basic-config.json:/consol/config/basic-config.json'
 
 networks:
   consul-test:
