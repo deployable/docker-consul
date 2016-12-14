@@ -1,0 +1,49 @@
+version: "2"
+
+services:
+  consul-server-1:
+    image: consul
+    networks:
+      consul-dev:
+        ipv4_address: 172.16.231.10
+    command: consul agent -server -bind=172.16.231.10 -data-dir /consul/data
+    volumes:
+    - 'consul-data:/consul/data'
+    - ./basic-config.json:/consol/config/basic-config.json
+    
+
+  consul-client-1:
+    image: consul
+    command: consul agent -dev -client=172.16.231.11 -bind=172.16.231.11 -join=172.16.231.10 -retry-join=172.16.231.10
+    networks:
+      consul-test:
+        ipv4_address: 172.16.231.11
+    depends_on:
+    - consul-server
+    volumes:
+    - ./basic-config.json:/consol/config/basic-config.json
+
+  consul-client-2:
+    image: consul
+    command: consul agent -dev -client=172.16.231.12 -bind=172.16.231.12 -join=172.16.231.10  -retry-join=172.16.231.10
+    networks:
+      consul-test:
+        ipv4_address: 172.16.231.12
+    depends_on:
+    - consul-server
+    volumes:
+    - ./basic-config.json:/consol/config/basic-config.json
+
+networks:
+  consul-test:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.231.0/24
+        gateway: 172.16.231.1
+
+volumes:
+  consul-data:
+    driver: local
+  
