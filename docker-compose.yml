@@ -88,3 +88,4 @@ volumes:
     driver: local
   consul_client_2_data:
     driver: local 
+
