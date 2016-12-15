@@ -4,7 +4,7 @@ services:
   consul-server-1:
     image: consul
     networks:
-      consul-dev:
+      consul-test:
         ipv4_address: 172.16.231.10
     command: consul agent -server -bind=172.16.231.10 -data-dir /consul/data
     volumes:
@@ -19,7 +19,7 @@ services:
       consul-test:
         ipv4_address: 172.16.231.11
     depends_on:
-    - consul-server
+    - consul-server-1
     volumes:
     - './basic-config.json:/consol/config/basic-config.json'
 
@@ -30,7 +30,7 @@ services:
       consul-test:
         ipv4_address: 172.16.231.12
     depends_on:
-    - consul-server
+    - consul-server-1
     volumes:
     - './basic-config.json:/consol/config/basic-config.json'
 
