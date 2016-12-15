@@ -1,41 +1,73 @@
 version: "2"
 
 services:
-  consul-server-1:
+  consul_server_1:
     image: consul
     networks:
-      consul-test:
-        ipv4_address: 172.16.231.10
-    command: consul agent -server -bind=172.16.231.10 -data-dir /consul/data -config-dir /consul/config
+      consul_test:
+        ipv4_address: 172.16.231.11
+    command: consul agent -server -bind=172.16.231.11 -data-dir /consul/data -config-dir /consul/config -bootstrap-expect=2 -retry-join=172.16.231.12 -retry-join=172.16.231.13
     volumes:
-    - 'consul-data:/consul/data'
+    - 'consul_data_1:/consul/data'
+    - './basic_config.json:/consul/config/basic_config.json'
+    
+  consul_server_2:
+    image: consul
+    networks:
+      consul_test:
+        ipv4_address: 172.16.231.12
+    command: consul agent -server -bind=172.16.231.12 -data-dir /consul/data -config-dir /consul/config  -retry-join=172.16.231.11 -retry-join=172.16.231.13
+    volumes:
+    - 'consul_data_2:/consul/data'
+    - './basic_config.json:/consul/config/basic_config.json'
+    
+  consul_server_3:
+    image: consul
+    networks:
+      consul_test:
+        ipv4_address: 172.16.231.13
+    command: consul agent -server -bind=172.16.231.13 -data-dir /consul/data -config-dir /consul/config  -retry-join=172.16.231.11 -retry-join=172.16.231.12
+    volumes:
+    - 'consul_data_3:/consul/data'
     - './basic_config.json:/consul/config/basic_config.json'
     
 
-  consul-client-1:
+  consul_client_1:
     image: consul
-    command: consul agent -dev -client=172.16.231.11 -bind=172.16.231.11 -join=172.16.231.10 -retry-join=172.16.231.10 -config-dir /consul/config
+    command: consul agent -dev -client=172.16.231.21 -bind=172.16.231.21 -join=172.16.231.11 -retry-join=172.16.231.11 -config-dir /consul/config
     networks:
-      consul-test:
-        ipv4_address: 172.16.231.11
+      consul_test:
+        ipv4_address: 172.16.231.21
     depends_on:
-    - consul-server-1
+      - consul_server_1
     volumes:
-    - './basic_config.json:/consul/config/basic_config.json'
+      - './basic_config.json:/consul/config/basic_config.json'
 
-  consul-client-2:
+  consul_client_2:
     image: consul
-    command: consul agent -dev -client=172.16.231.12 -bind=172.16.231.12 -join=172.16.231.10  -retry-join=172.16.231.10 -config-dir /consul/config
+    command: consul agent -dev -client=172.16.231.22 -bind=172.16.231.22 -join=172.16.231.12  -retry-join=172.16.231.12 -config-dir /consul/config
     networks:
-      consul-test:
-        ipv4_address: 172.16.231.12
+      consul_test:
+        ipv4_address: 172.16.231.22
     depends_on:
-    - consul-server-1
+      - consul_server_2
     volumes:
-    - './basic_config.json:/consul/config/basic_config.json'
+      - './basic_config.json:/consul/config/basic_config.json'
+
+  registrator:
+    image: gliderlabs/registrator:latest 
+    hostname: registrator
+    networks:
+     consul_test:
+       ipv4_address: 172.16.231.51
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    depends_on:
+      - consul_client_2
+    command: -ttl 300 -ttl-refresh 120 -tags mhmbpro consul://172.16.231.22:8500
 
 networks:
-  consul-test:
+  consul_test:
     driver: bridge
     ipam:
       driver: default
@@ -44,6 +76,10 @@ networks:
         gateway: 172.16.231.1
 
 volumes:
-  consul-data:
+  consul_data_1:
+    driver: local
+  consul_data_2:
+    driver: local
+  consul_data_3:
     driver: local
   
