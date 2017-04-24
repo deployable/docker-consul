@@ -1,0 +1,22 @@
+version: "2"
+
+services:
+  consul_init:
+    image: consul
+    command: |
+      sh -c 'set -uex; \
+         consul kv put -http-addr=http://172.16.231.22:8500 config/init true'
+    volumes:
+      - './basic_config.json:/consul/config/basic_config.json'
+    networks:
+      - consul_test
+
+networks:
+  consul_test:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.231.0/24
+        gateway: 172.16.231.1
+
