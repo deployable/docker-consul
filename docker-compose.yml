@@ -66,7 +66,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock
     depends_on:
       - consul_client_2
-    command: -ttl 300 -ttl-refresh 120 -tags mhmbpro consul://172.16.231.22:8500
+    command: -ttl 300 -ttl-refresh 120 -tags mhmb consul://172.16.231.22:8500
 
 networks:
   consul_test:
