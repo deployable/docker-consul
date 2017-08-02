@@ -1,4 +1,4 @@
-# consul compose definition
+# Consul Cluster - Docker Compose Definition
 
 A docker compose definition for a [consul](https://consul.io) network, including [registrator](http://gliderlabs.com/registrator/latest/) based on the default [`consul`](https://hub.docker.com/_/consul/) image.
 
