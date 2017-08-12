@@ -11,6 +11,22 @@ services:
     networks:
       - consul_test
 
+  set:
+    image: consul
+    entrypoint: consul kv put -http-addr=http://172.16.231.22:8500
+    volumes:
+      - './basic_config.json:/consul/config/basic_config.json'
+    networks:
+      - consul_test
+
+  get:
+    image: consul
+    entrypoint: consul kv get -http-addr=http://172.16.231.22:8500
+    volumes:
+      - './basic_config.json:/consul/config/basic_config.json'
+    networks:
+      - consul_test
+
 networks:
   consul_test:
     driver: bridge
