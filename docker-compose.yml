@@ -10,6 +10,11 @@ services:
     volumes:
     - 'consul_data_1:/consul/data'
     - './basic_config.json:/consul/config/basic_config.json'
+    ports:
+     - '8310:8300/udp'
+     - '8311:8301/udp'
+     - '8312:8302/udp'
+     - '8411:8400/tcp'
     
   consul_server_2:
     image: consul
@@ -20,6 +25,11 @@ services:
     volumes:
     - 'consul_data_2:/consul/data'
     - './basic_config.json:/consul/config/basic_config.json'
+    ports:
+     - '8320:8300/udp'
+     - '8321:8301/udp'
+     - '8322:8302/udp'
+     - '8412:8400/tcp'
     
   consul_server_3:
     image: consul
@@ -30,6 +40,11 @@ services:
     volumes:
     - 'consul_data_3:/consul/data'
     - './basic_config.json:/consul/config/basic_config.json'
+    ports:
+     - '8330:8300/udp'
+     - '8331:8301/udp'
+     - '8332:8302/udp'
+     - '8413:8400/tcp'
     
 
   consul_client_1:
@@ -43,6 +58,11 @@ services:
     volumes:
       - 'consul_client_1_data:/consul/data'
       - './basic_config.json:/consul/config/basic_config.json'
+    ports:
+     - '8421:8400/tcp'
+     - '8521:8500/tcp'
+     - '8621:8600/udp'
+     - '8621:8600/tcp'
 
   consul_client_2:
     image: consul
@@ -55,6 +75,11 @@ services:
     volumes:
       - 'consul_client_2_data:/consul/data'
       - './basic_config.json:/consul/config/basic_config.json'
+    ports:
+     - '8422:8400/tcp'
+     - '8522:8500/tcp'
+     - '8622:8600/udp'
+     - '8622:8600/tcp'
 
   registrator:
     image: gliderlabs/registrator:latest 
